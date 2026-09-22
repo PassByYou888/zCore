@@ -1,4 +1,27 @@
-﻿{ ******************************************************************************
+﻿(*
+MIT License
+
+Copyright (c) 2026 by.LaoZhang qq600585
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*)
+{ ******************************************************************************
   * Z.PascalStrings – High‑Performance String Type with Cross‑Compiler Support
   *
   * This unit defines TPascalString, a custom string record designed for
@@ -407,6 +430,21 @@ type
       * @return upper‑case SystemString.
     }
     function UpperText: SystemString;
+
+    { * ShortText
+      * Returns a shortened representation of the string.
+      *
+      * When the string length L exceeds MaxL and MaxL is greater than
+      * LL_ + RL_, the result is formed by taking the first LL_ characters,
+      * adding ' ... ', and then appending the last RL_ characters.
+      * Otherwise, the original string is returned unchanged.
+      *
+      * @param MaxL  Maximum length threshold for truncation.
+      * @param LL_   Number of characters to keep from the left side.
+      * @param RL_   Number of characters to keep from the right side.
+      * @return      The shortened string, or the original string.
+    }
+    function ShortText(MaxL, LL_, RL_: Integer): TPascalString;
 
     // ----- Inversion (reverse) --------------------------------------------
 
@@ -2369,6 +2407,13 @@ end;
 function TPascalString.UpperText: SystemString;
 begin
   Result := UpperCase(Text);
+end;
+
+function TPascalString.ShortText(MaxL, LL_, RL_: Integer): TPascalString;
+begin
+  if (L > MaxL) and (MaxL > (LL_ + RL_)) then
+      Result.Text := GetString(1, LL_).Text + ' ... ' + GetString(L - RL_, L).Text
+  else Result := Self;
 end;
 
 function TPascalString.Invert: TPascalString;
